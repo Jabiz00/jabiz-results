@@ -99,6 +99,8 @@ function render(d,isSample){
   h+='<div class="card banner '+S.tone+'"><b>'+esc(S.verdict)+(isSample?' (sample data, not real)':'')+'</b>'
    +'You have '+S.n+' finished practice trades. Aim for 100 before trusting any pattern.<div class="bar"><i style="width:'+Math.min(100,S.n)+'%"></i></div></div>';
   var lc=d.last_cycle_ts;if(!isSample&&lc&&now-lc>3*3600)h+='<div class="card banner bad"><b>The bot has not recorded a cycle for '+ago(lc,now)+'</b>It may have stopped. Check the Actions tab in your private repo.</div>';
+  if(d.audit&&d.audit.ok===false)h+='<div class="card banner bad"><b>Ledger check failed</b>The bot’s own accounting check found a problem: '+esc((d.audit.problems||[]).slice(0,2).join("; "))+'. Treat the numbers below with caution.</div>';
+  if(d.unresolved>0)h+='<div class="card banner bad"><b>'+d.unresolved+' open trade(s) have had no price for hours</b>They are counted at $0 in the balance until they price again. They are not booked as realised losses.</div>';
   if(S.stale>0)h+='<div class="card banner bad"><b>'+S.stale+' open trade(s) have no fresh price</b>Your balance may be too high until prices return. Check these trades.</div>';
   h+='<div class="grid">'
    +'<div class="kpi"><div class="l">Pretend balance</div><div class="v '+tCls+'">'+money(S.equity)+'</div><div class="h">'+pct(S.change)+' vs. start '+money(S.start)+'</div></div>'
